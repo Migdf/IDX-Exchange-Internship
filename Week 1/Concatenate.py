@@ -83,8 +83,8 @@ def combine_and_filter_residential(folder_path, output_path, dataset_name):
     print(f"{dataset_name} row count before Residential filter: {rows_before_filter}")
 
     # Filter to only keep PropertyType == Residential
-    residential = combined[combined["PropertyType"] == "Residential"]
-
+    residential = combined[combined["PropertyType"] == "Residential"] # Comment out for non-filtered concatenation
+    # residential = combined
     # Row count after Residential filter
     rows_after_filter = len(residential)
     print(f"{dataset_name} row count after Residential filter: {rows_after_filter}")
@@ -97,7 +97,7 @@ def combine_and_filter_residential(folder_path, output_path, dataset_name):
 
 ### Listings ###
 listings_folder = "/Users/michael/Downloads/IDX Exchange Internship/CRMLSL IDX Exchange CSVs/CRMLSListing"
-listings_output = "/Users/michael/Downloads/Listings_Residential.csv"
+listings_output = "/Users/michael/Downloads/listings.csv"
 
 combine_and_filter_residential(
     folder_path=listings_folder,
@@ -108,7 +108,7 @@ combine_and_filter_residential(
 
 ### Sold ###
 sold_folder = "/Users/michael/Downloads/IDX Exchange Internship/CRMLSL IDX Exchange CSVs/CRMLSSold"
-sold_output = "/Users/michael/Downloads/Sold_Residential.csv"
+sold_output = "/Users/michael/Downloads/sold.csv"
 
 combine_and_filter_residential(
     folder_path=sold_folder,
