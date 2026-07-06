@@ -1,0 +1,5 @@
+Objective: Validate and structure the Week 2 sold MLS dataset for Residential market analysis.
+
+Taking the combined sold MLS data from Week 1 as input, the Week 2 script inspects the dataset structure by printing the original row and column counts, column names, and first few rows. It reviews the PropertyType field to document all unique property categories and calculates both count and percentage summaries for each type. Then, it filters the dataset to only keep rows where PropertyType is "Residential".
+
+After filtering, the script performs missing value analysis by calculating null counts and missing percentages for every column. It flags columns with more than 90% missing values and removes those columns from the Residential-only dataset. The script then analyzes key numeric fields such as ClosePrice, ListPrice, OriginalListPrice, LivingArea, LotSizeAcres, BedroomsTotal, BathroomsTotalInteger, DaysOnMarket, and YearBuilt by generating percentile summaries, histograms, boxplots, and IQR-based outlier counts. Finally, it saves the cleaned Residential dataset as sold_week2.csv for future analysis.
