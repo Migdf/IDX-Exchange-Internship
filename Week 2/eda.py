@@ -201,7 +201,10 @@ for col in numeric_fields_existing:
     plt.show()
 
     plt.figure(figsize=(8, 5))
-    plt.boxplot(series, vert=False)
+    plt.boxplot(series, vert=False,flierprops={
+        "marker": ".",
+        "markersize": 5
+    })
     plt.title(f"Boxplot of {col}")
     plt.xlabel(col)
     plt.tight_layout()
