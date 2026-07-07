@@ -1,0 +1,7 @@
+Objective: Enrich the sold and listings MLS datasets with monthly national 30-year fixed mortgage rates.
+
+Taking the sold and listings MLS data from Week 1 as input, the Week 3 script loads both datasets and fetches the MORTGAGE30US series directly from the St. Louis Federal Reserve. This mortgage rate data is originally published weekly, so the script converts each observation date into a year-month key and calculates the average 30-year fixed mortgage rate for each month.
+
+The script then creates matching year-month keys for both MLS datasets. For the sold dataset, the key is based on CloseDate because that represents when the transaction closed. For the listings dataset, the key is based on ListingContractDate because that represents when the property was listed. After creating these matching monthly keys, the script performs left merges to attach the monthly mortgage rate to each sold and listing record.
+
+After merging, the script validates the results by checking how many rows are missing the mortgage rate column. If no missing values are found in either dataset, the script prints a validation message confirming that the merge was successful. It also prints preview rows showing the transaction or listing date, year-month key, price field, and mortgage rate to visually confirm the enrichment. Finally, the script converts the year_month column to a string format and saves the enriched outputs as sold_with_mortgage_rates.csv and listings_with_mortgage_rates.csv for future analysis.
