@@ -13,8 +13,8 @@ listings_output = os.path.join(output_folder, "listings_with_mortgage_rates.csv"
 os.makedirs(output_folder, exist_ok=True)
 
 ### Load and Fetch Data ###
-sold = pd.read_csv(sold_input)
-listings = pd.read_csv(listings_input)
+sold = pd.read_csv(sold_input, low_memory=False)
+listings = pd.read_csv(listings_input, low_memory=False)
 
 url = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=MORTGAGE30US"
 mortgage = pd.read_csv(url, parse_dates=["observation_date"])
