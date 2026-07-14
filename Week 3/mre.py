@@ -1,11 +1,12 @@
 import pandas as pd
 import os
 
-input_folder = "/Users/michael/Downloads/IDX Exchange Internship/IDX Exchange DA28 Repo/Week 1 Output"
+input_folder_1 = "/Users/michael/Downloads/IDX Exchange Internship/IDX Exchange DA28 Repo/Week 1 Output"
+input_folder_2 = "/Users/michael/Downloads/IDX Exchange Internship/IDX Exchange DA28 Repo/Week 2 Output"
 output_folder = "/Users/michael/Downloads/IDX Exchange Internship/IDX Exchange DA28 Repo/Week 3 Output"
 
-sold_input = os.path.join(input_folder, "sold.csv")
-listings_input = os.path.join(input_folder, "listings.csv")
+sold_input = os.path.join(input_folder_2, "sold_week2.csv")
+listings_input = os.path.join(input_folder_1, "listings.csv")
 
 sold_output = os.path.join(output_folder, "sold_with_mortgage_rates.csv")
 listings_output = os.path.join(output_folder, "listings_with_mortgage_rates.csv")
