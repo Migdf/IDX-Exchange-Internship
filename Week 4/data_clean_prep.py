@@ -9,10 +9,6 @@ def clean_week4_dataset(input_path, output_path, dataset_name):
 
     data = pd.read_csv(input_path, low_memory=False)
 
-    print("\n==================================================")
-    print(f"{dataset_name.upper()} DATASET LOADED")
-    print("==================================================")
-    print("Dataset loaded successfully.")
     print(f"Input path: {input_path}")
     print(f"Original dataset shape: {data.shape}")
     print(f"Original row count: {data.shape[0]}")
@@ -174,10 +170,7 @@ def clean_week4_dataset(input_path, output_path, dataset_name):
     ### Date Consistency Check ###
     print("\n----- Date Consistency Checks -----")
 
-    # Required logical order:
-    # ListingContractDate should be before PurchaseContractDate,
-    # and PurchaseContractDate should be before CloseDate.
-    #
+    # ListingContractDate should be before PurchaseContractDate, and PurchaseContractDate should be before CloseDate.
     # Listings may not have CloseDate or PurchaseContractDate.
     # If a field is missing, the related flag is set to False.
 
@@ -208,10 +201,9 @@ def clean_week4_dataset(input_path, output_path, dataset_name):
     ### Geographic Data Check ###
     print("\n----- Geographic Data Checks -----")
 
-    # California latitude is usually around 32 to 42.
-    # California longitude is usually around -125 to -114.
-    # These bounds are used to flag clearly implausible coordinates.
-
+    # California latitude is around 32 to 42.
+    # California longitude is around -125 to -114.
+    
     if "Latitude" in data.columns and "Longitude" in data.columns:
         data["missing_coordinates_flag"] = data["Latitude"].isnull() | data["Longitude"].isnull()
 
