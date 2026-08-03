@@ -2,7 +2,9 @@ import pandas as pd
 import os
 import geopandas as gpd
 from shapely.geometry import Point
+import warnings
 
+warnings.filterwarnings("ignore", message="Mean of empty slice")
 
 ### Load dataset ###
 
@@ -178,16 +180,6 @@ for col in [
 
 print("\n----- School District Mapping -----")
 
-# Aidan's instructions:
-# 1. Download the California School District boundary GeoJSON
-# 2. Install GeoPandas
-# 3. Read the school district GeoJSON into a GeoDataFrame
-# 4. Filter the school district dataset to only include DistrictType = "Unified"
-# 5. Convert each property's Latitude and Longitude into a geographic point
-# 6. Perform a spatial join to determine which Unified School District polygon contains each property
-# 7. Add the resulting DistrictName as a new column in your dataset
-# 8. Save the enriched dataset
-
 if not os.path.exists(school_district_file):
     raise FileNotFoundError(f"School district GeoJSON not found at: {school_district_file}")
 
@@ -346,7 +338,7 @@ if "PropertyType" in sold.columns:
         ["count", "mean", "median", "min", "max"]
     )
 
-    print(property_type_summary.to_string())
+    print(property_type_summary.head(25).to_string())
 else:
     print("PropertyType column not found. Skipping PropertyType segment summary.")
 
@@ -360,7 +352,7 @@ if "CountyOrParish" in sold.columns:
         ["count", "mean", "median", "min", "max"]
     )
 
-    print(county_summary.to_string())
+    print(county_summary.head(25).to_string())
 else:
     print("CountyOrParish column not found. Skipping CountyOrParish segment summary.")
 
@@ -374,7 +366,7 @@ if "PropertySubType" in sold.columns:
         ["count", "mean", "median", "min", "max"]
     )
 
-    print(subtype_summary.to_string())
+    print(subtype_summary.head(25).to_string())
 else:
     print("PropertySubType column not found. Skipping PropertySubType segment summary.")
 
@@ -388,7 +380,7 @@ if "MLSAreaMajor" in sold.columns:
         ["count", "mean", "median", "min", "max"]
     )
 
-    print(area_summary.to_string())
+    print(area_summary.head(25).to_string())
 else:
     print("MLSAreaMajor column not found. Skipping MLSAreaMajor segment summary.")
 
@@ -442,7 +434,7 @@ if "YrMo" in sold.columns:
         ["count", "mean", "median"]
     )
 
-    print(yrmo_summary.to_string())
+    print(yrmo_summary.head(25).to_string())
 else:
     print("YrMo column not found. Skipping YrMo summary.")
 

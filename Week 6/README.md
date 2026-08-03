@@ -1,0 +1,7 @@
+Objective: Create feature-engineered market metrics and enrich the sold MLS dataset with Unified School District information.
+
+This script uses the Week 4 cleaned sold MLS dataset as input and creates new analysis columns including price ratio, close-to-original-list ratio, price per square foot, days on market, close year, close month, YrMo, listing-to-contract days, and contract-to-close days. Date fields are converted to datetime format, and key numeric fields such as prices, living area, coordinates, and days on market are converted to numeric types.
+
+The script also adds school district information by loading the California school district GeoJSON file with GeoPandas. It filters the district boundaries to only include Unified school districts, converts each property’s latitude and longitude into geographic points, and performs a spatial join to match each property to the Unified School District polygon it falls within.
+
+After feature engineering and school district mapping, the script prints sample rows showing the new columns and produces segmented summary tables by PropertyType, CountyOrParish, PropertySubType, MLSAreaMajor, ListOfficeName, BuyerOfficeName, and YrMo. Finally, it saves the enriched dataset as sold_week6_features.csv for future analysis.
