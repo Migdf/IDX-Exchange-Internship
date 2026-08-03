@@ -9,6 +9,8 @@ warnings.filterwarnings("ignore", message="Mean of empty slice")
 ### Load dataset ###
 
 input_path = "/Users/michael/Downloads/IDX Exchange Internship/IDX Exchange DA28 Repo/Week 4 Output/sold_week4_cleaned.csv"
+listings_input_path = "/Users/michael/Downloads/IDX Exchange Internship/IDX Exchange DA28 Repo/Week 4 Output/listings_week4_cleaned.csv"
+
 output_folder = "/Users/michael/Downloads/IDX Exchange Internship/IDX Exchange DA28 Repo/Week 6 Output"
 output_path = os.path.join(output_folder, "sold_week6_features.csv")
 
@@ -17,12 +19,19 @@ school_district_file = "/Users/michael/Downloads/IDX Exchange Internship/IDX Exc
 os.makedirs(output_folder, exist_ok=True)
 
 sold = pd.read_csv(input_path, low_memory=False)
+listings = pd.read_csv(listings_input_path, low_memory=False)
 
 print("Dataset loaded successfully.")
 print(f"Input path: {input_path}")
 print(f"Original dataset shape: {sold.shape}")
 print(f"Original row count: {sold.shape[0]}")
 print(f"Original column count: {sold.shape[1]}")
+
+print("\nListings dataset loaded successfully.")
+print(f"Listings input path: {listings_input_path}")
+print(f"Listings dataset shape: {listings.shape}")
+print(f"Listings row count: {listings.shape[0]}")
+print(f"Listings column count: {listings.shape[1]}")
 
 
 ### Convert Date Fields ###
@@ -102,17 +111,24 @@ if "ClosePrice" in sold.columns and "OriginalListPrice" in sold.columns:
 else:
     sold["price_ratio"] = pd.NA
 
-# Close to Original List Ratio = ClosePrice / OriginalListPrice
-if "ClosePrice" in sold.columns and "OriginalListPrice" in sold.columns:
-    sold["close_to_original_list_ratio"] = sold["ClosePrice"] / sold["OriginalListPrice"]
-else:
-    sold["close_to_original_list_ratio"] = pd.NA
+# Remove unrealistic price ratio outliers
+sold.loc[
+    (sold["price_ratio"] <= 0) | (sold["price_ratio"] > 3),
+    "price_ratio"
+] = pd.NA
+
 
 # Price Per Sq Ft = ClosePrice / LivingArea
 if "ClosePrice" in sold.columns and "LivingArea" in sold.columns:
     sold["price_per_sqft"] = sold["ClosePrice"] / sold["LivingArea"]
 else:
     sold["price_per_sqft"] = pd.NA
+
+# Remove unrealistic price per sqft outliers
+sold.loc[
+    (sold["price_per_sqft"] <= 0) | (sold["price_per_sqft"] > 5000),
+    "price_per_sqft"
+] = pd.NA
 
 # Days on Market = raw DaysOnMarket field
 if "DaysOnMarket" in sold.columns:
@@ -129,6 +145,72 @@ else:
     sold["close_year"] = pd.NA
     sold["close_month"] = pd.NA
     sold["YrMo"] = pd.NA
+
+
+### Close to Original List Ratio ###
+
+print("\n----- Close to Original List Ratio -----")
+
+# Close to Original List Ratio = number of closed listings / number of original listings
+# Closed listings come from the sold dataset.
+# Original listings come from the listings dataset.
+
+if "YrMo" in sold.columns and "ListingContractDate" in listings.columns:
+
+    listings["ListingContractDate"] = pd.to_datetime(
+        listings["ListingContractDate"],
+        errors="coerce"
+    )
+
+    listings["YrMo"] = listings["ListingContractDate"].dt.to_period("M").astype(str)
+
+    closed_counts = (
+        sold.groupby("YrMo")
+        .size()
+        .reset_index(name="closed_listing_count")
+    )
+
+    original_listing_counts = (
+        listings.groupby("YrMo")
+        .size()
+        .reset_index(name="original_listing_count")
+    )
+
+    monthly_close_ratio = closed_counts.merge(
+        original_listing_counts,
+        on="YrMo",
+        how="left"
+    )
+
+    monthly_close_ratio["close_to_original_list_ratio"] = (
+        monthly_close_ratio["closed_listing_count"] /
+        monthly_close_ratio["original_listing_count"]
+    )
+
+    sold = sold.merge(
+        monthly_close_ratio[
+            [
+                "YrMo",
+                "closed_listing_count",
+                "original_listing_count",
+                "close_to_original_list_ratio"
+            ]
+        ],
+        on="YrMo",
+        how="left"
+    )
+
+    print("Close to original list ratio created.")
+    print(monthly_close_ratio.head(25).to_string(index=False))
+
+else:
+    sold["closed_listing_count"] = pd.NA
+    sold["original_listing_count"] = pd.NA
+    sold["close_to_original_list_ratio"] = pd.NA
+
+    print("Required columns not found.")
+    print("close_to_original_list_ratio set to missing.")
+
 
 # Listing to Contract Days = PurchaseContractDate - ListingContractDate
 if "PurchaseContractDate" in sold.columns and "ListingContractDate" in sold.columns:
@@ -321,6 +403,7 @@ print("\n----- Segment Summary by PropertyType -----")
 
 segment_metrics = [
     "ClosePrice",
+    "close_to_original_list_ratio",
     "price_ratio",
     "price_per_sqft",
     "DaysOnMarket",
