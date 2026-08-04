@@ -113,7 +113,7 @@ else:
 
 # Remove unrealistic price ratio outliers
 sold.loc[
-    (sold["price_ratio"] <= 0) | (sold["price_ratio"] > 3),
+    (sold["price_ratio"] <= 0),
     "price_ratio"
 ] = pd.NA
 
